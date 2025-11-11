@@ -1,11 +1,6 @@
-Alright — here’s exactly what to write in your README.md file:
+# Hailshdade
 
-
----
-
-# LifeSolver
-
-LifeSolver is a simple website that helps people with everyday tools like a calculator, BMI checker, tip calculator, and unit converter. It’s easy to use and works on any device.
+Hailshdade is a simple website that helps people with everyday tools like a calculator, BMI checker, tip calculator, and unit converter. It’s easy to use and works on any device.
 
 ## Features
 - Calculator  
@@ -24,8 +19,3 @@ LifeSolver is a simple website that helps people with everyday tools like a calc
 - HTML  
 - CSS  
 - JavaScript
-
-
----
-
-Just copy all of that text and paste it into your README.md file on GitHub.
