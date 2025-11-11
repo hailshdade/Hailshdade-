@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hailshdade - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Hailshdade</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="astronomy.html">Astronomy</a>
+            <a href="finance.html">Finance</a>
+            <a href="about.html">About</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Welcome to Hailshdade</h2>
+        <p>Your all-in-one tool for everyday calculations.</p>
+
+        <section class="tools">
+            <div class="tool-card">
+                <h3>Calculator</h3>
+                <input type="number" id="calcInput" placeholder="Enter a number">
+                <button onclick="alert('Calculator coming soon!')">Use Calculator</button>
+            </div>
+
+            <div class="tool-card">
+                <h3>BMI Calculator</h3>
+                <input type="number" id="height" placeholder="Height (cm)">
+                <input type="number" id="weight" placeholder="Weight (kg)">
+                <button onclick="calculateBMI()">Calculate BMI</button>
+                <div id="bmiResult" class="result"></div>
+            </div>
+
+            <div class="tool-card">
+                <h3>Age Calculator</h3>
+                <input type="date" id="birthDate">
+                <button onclick="calculateAge()">Calculate Age</button>
+                <div id="ageResult" class="result"></div>
+            </div>
+        </section>
+    </main>
+</body>
+<script src="script.js"></script>
+</html>
