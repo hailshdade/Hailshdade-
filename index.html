@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LifeSolver - Practical Problem Solver</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4361ee">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="LifeSolver">
+    <link rel="manifest" href="manifest.json">
+    
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --hover-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+        }
+        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body { 
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); 
+            color: var(--dark); 
+            min-height: 100vh; 
+            padding: 0;
+            line-height: 1.6;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+        }
+        
+        .container { 
+            max-width: 100%; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 0; 
+            box-shadow: none; 
+            overflow: hidden; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); 
+            color: white; 
+            padding: 20px 15px; 
+            text-align: center; 
+            position: relative;
+            overflow: hidden;
+            padding-top: calc(20px + var(--safe-area-top));
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+        
+        h1 { 
+            font-size: 2rem; 
+            margin-bottom: 8px; 
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .tagline { 
+            font-size: 1rem; 
+            opacity: 0.9; 
+            margin-bottom: 15px;
+        }
+        
+        .search-container {
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 14px 50px 14px 18px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            -webkit-appearance: none;
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: var(--secondary);
+        }
+        
+        .category-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-tab {
+            padding: 10px 18px;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .category-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tools { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 15px; 
+            padding: 15px; 
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .tool-card { 
+            background: var(--light); 
+            border-radius: 12px; 
+            padding: 20px; 
+            box-shadow: var(--card-shadow); 
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tool-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        .tool-card h3 { 
+            color: var(--primary); 
+            margin-bottom: 15px; 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid #e9ecef; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .tool-card h3 i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        
+        input, select, textarea { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 8px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 1rem;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        button { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); 
+            color: white; 
+            border: none; 
+            padding: 14px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-weight: 600; 
+            font-size: 1rem;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            touch-action: manipulation;
+        }
+        
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .result { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: #e7f3ff; 
+            border-radius: 8px; 
+            border-left: 4px solid var(--primary); 
+            display: none;
+            animation: fadeIn 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        footer { 
+            text-align: center; 
+            padding: 20px; 
+            color: #6c757d; 
+            font-size: 0.9rem; 
+            border-top: 1px solid #e9ecef; 
+            background: #f8f9fa;
+            padding-bottom: calc(20px + var(--safe-area-bottom));
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .social-links a {
+            color: var(--primary);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        /* Mobile-specific improvements */
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        /* Swipe-friendly category tabs */
+        .category-tabs {
+            scroll-behavior: smooth;
+        }
+        
+        /* Better touch targets */
+        button, .category-tab {
+            min-height: 44px;
+        }
+        
+        input, select {
+            min-height: 48px;
+        }
+        
+        /* Loading states */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --light: #2d3748;
+                --dark: #f7fafc;
+            }
+            
+            body {
+                background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            }
+            
+            .container {
+                background: #1a202c;
+                color: var(--dark);
+            }
+            
+            .tool-card {
+                background: #2d3748;
+            }
+            
+            input, select, textarea {
+                background: #4a5568;
+                border-color: #4a5568;
+                color: var(--dark);
+            }
+            
+            .result {
+                background: #2d3748;
+            }
+            
+            footer {
+                background: #2d3748;
+            }
+            
+            .category-tabs {
+                background: #2d3748;
+            }
+            
+            .category-tab {
+                background: #4a5568;
+                color: var(--dark);
+            }
+            
+            .category-tab.active {
+                background: var(--primary);
+                color: white;
+            }
+        }
+        
+        /* Tablet and larger screens */
+        @media (min-width: 768px) {
+            .tools {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .container {
+                max-width: 768px;
+                margin: 20px auto;
+                border-radius: 20px;
+            }
+            
+            header {
+                border-radius: 20px 20px 0 0;
+            }
+        }
+        
+        /* Large screens */
+        @media (min-width: 1024px) {
+            .tools {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .container {
+                max-width: 1024px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-lightbulb"></i> LifeSolver</h1>
+            <p class="tagline">Practical tools for everyday problems</p>
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Search for tools...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+        </header>
+        
+        <div class="category-tabs">
+            <div class="category-tab active" data-category="all">All Tools</div>
+            <div class="category-tab" data-category="finance">Finance</div>
+            <div class="category-tab" data-category="health">Health</div>
+            <div class="category-tab" data-category="education">Education</div>
+            <div class="category-tab" data-category="astronomy">Astronomy</div>
+            <div class="category-tab" data-category="utilities">Utilities</div>
+        </div>
+        
+        <div class="tools">
+            <!-- Finance Tools -->
+            <div class="tool-card" data-category="finance">
+                <h3><i class="fas fa-money-bill-wave"></i> Tip Calculator</h3>
+                <input type="number" id="billAmount" placeholder="Bill amount ($)">
+                <input type="number" id="tipPercent" placeholder="Tip percentage (%)" value="15">
+                <input type="number" id="peopleCount" placeholder="Number of people" value="1">
+                <button onclick="calculateTip()"><i class="fas fa-calculator"></i> Calculate Tip</button>
+                <div id="tipResult" class="result"></div>
+            </div>
+            
+            <div class="tool-card" data-category="finance">
+                <h3><i class="fas fa-home"></i> Loan Calculator</h3>
+                <input type="number" id="loanAmount" placeholder="Loan amount ($)">
+                <input type="number" id="interestRate" placeholder="Annual interest rate (%)">
+                <input type="number" id="loanTerm" placeholder="Loan term (years)">
+                <button onclick="calculateLoan()"><i class="fas fa-calculator"></i> Calculate Loan</button>
+                <div id="loanResult" class="result"></div>
+            </div>
+            
+            <div class="tool-card" data-category="finance">
+                <h3><i class="fas fa-money-bill"></i> Currency Converter</h3>
+                <input type="number" id="currencyAmount" placeholder="Amount">
+                <select id="currencyFrom">
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                </select>
+                <select id="currencyTo">
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                </select>
+                <button onclick="convertCurrency()"><i class="fas fa-exchange-alt"></i> Convert Currency</button>
+                <div id="currencyResult" class="result"></div>
+            </div>
+            
+            <!-- Health Tools -->
+            <div class="tool-card" data-category="health">
+                <h3><i class="fas fa-weight"></i> BMI Calculator</h3>
+                <input type="number" id="height" placeholder="Height (cm)">
+                <input type="number" id="weight" placeholder="Weight (kg)">
+                <button onclick="calculateBMI()"><i class="fas fa-calculator"></i> Calculate BMI</button>
+                <div id="bmiResult" class="result"></div>
+            </div>
+            
+            <div class="tool-card" data-category="health">
+                <h3><i class="fas fa-heartbeat"></i> Calorie Calculator</h3>
+                <input type="number" id="age" placeholder="Age">
+                <select id="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <input type="number" id="heightCm" placeholder="Height (cm)">
+                <input type="number" id="weightKg" placeholder="Weight (kg)">
+                <select id="activityLevel">
+                    <option value="1.2">Sedentary</option>
+                    <option value="1.375">Lightly active</option>
+                    <option value="1.55">Moderately active</option>
+                    <option value="1.725">Very active</option>
+                    <option value="1.9">Extra active</option>
+                </select>
+                <button onclick="calculateCalories()"><i class="fas fa-calculator"></i> Calculate Calories</button>
+                <div id="calorieResult" class="result"></div>
+            </div>
+            
+            <!-- Education Tools -->
+            <div class="tool-card" data-category="education">
+                <h3><i class="fas fa-graduation-cap"></i> GPA Calculator</h3>
+                <div id="gpaCourses">
+                    <div class="course-entry">
+                        <input type="text" class="courseName" placeholder="Course name">
+                        <input type="number" class="courseCredits" placeholder="Credits" min="1">
+                        <select class="courseGrade">
+                            <option value="4.0">A</option>
+                            <option value="3.7">A-</option>
+                            <option value="3.3">B+</option>
+                            <option value="3.0">B</option>
+                            <option value="2.7">B-</option>
+                            <option value="2.3">C+</option>
+                            <option value="2.0">C</option>
+                            <option value="1.7">C-</option>
+                            <option value="1.3">D+</option>
+                            <option value="1.0">D</option>
+                            <option value="0.0">F</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="addCourse()"><i class="fas fa-plus"></i> Add Course</button>
+                <button onclick="calculateGPA()"><i class="fas fa-calculator"></i> Calculate GPA</button>
+                <div id="gpaResult" class="result"></div>
+            </div>
+            
+            <!-- Astronomy Tools -->
+            <div class="tool-card" data-category="astronomy">
+                <h3><i class="fas fa-moon"></i> Moon Phase Calculator</h3>
+                <input type="date" id="moonDate" value="">
+                <button onclick="calculateMoonPhase()"><i class="fas fa-calculator"></i> Calculate Moon Phase</button>
+                <div id="moonResult" class="result"></div>
+            </div>
+            
+            <div class="tool-card" data-category="astronomy">
+                <h3><i class="fas fa-sun"></i> Sunrise/Sunset</h3>
+                <input type="date" id="sunDate" value="">
+                <input type="text" id="latitude" placeholder="Latitude (e.g., 40.7128)">
+                <input type="text" id="longitude" placeholder="Longitude (e.g., -74.0060)">
+                <button onclick="calculateSunTimes()"><i class="fas fa-calculator"></i> Calculate Sun Times</button>
+                <div id="sunResult" class="result"></div>
+            </div>
+            
+            <!-- Utilities -->
+            <div class="tool-card" data-category="utilities">
+                <h3><i class="fas fa-exchange-alt"></i> Unit Converter</h3>
+                <input type="number" id="convertValue" placeholder="Value to convert">
+                <select id="convertFrom">
+                    <option value="miles">Miles</option>
+                    <option value="km">Kilometers</option>
+                    <option value="lbs">Pounds</option>
+                    <option value="kg">Kilograms</option>
+                    <option value="celsius">Celsius</option>
+                    <option value="fahrenheit">Fahrenheit</option>
+                </select>
+                <select id="convertTo">
+                    <option value="km">Kilometers</option>
+                    <option value="miles">Miles</option>
+                    <option value="kg">Kilograms</option>
+                    <option value="lbs">Pounds</option>
+                    <option value="fahrenheit">Fahrenheit</option>
+                    <option value="celsius">Celsius</option>
+                </select>
+                <button onclick="convertUnits()"><i class="fas fa-sync-alt"></i> Convert</button>
+                <div id="convertResult" class="result"></div>
+            </div>
+            
+            <div class="tool-card" data-category="utilities">
+                <h3><i class="fas fa-key"></i> Password Generator</h3>
+                <input type="number" id="passLength" placeholder="Password length" min="6" max="20" value="12">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0;">
+                    <label><input type="checkbox" id="uppercase" checked> Uppercase</label>
+                    <label><input type="checkbox" id="numbers" checked> Numbers</label>
+                    <label><input type="checkbox" id="symbols"> Symbols</label>
+                </div>
+                <button onclick="generatePassword()"><i class="fas fa-lock"></i> Generate Password</button>
+                <div id="passwordResult" class="result"></div>
+            </div>
+            
+            <div class="tool-card" data-category="utilities">
+                <h3><i class="fas fa-birthday-cake"></i> Age Calculator</h3>
+                <input type="date" id="birthDate">
+                <button onclick="calculateAge()"><i class="fas fa-calculator"></i> Calculate Age</button>
+                <div id="ageResult" class="result"></div>
+            </div>
+            
+            <div class="tool-card" data-category="utilities">
+                <h3><i class="fas fa-clock"></i> Time Zone Converter</h3>
+                <input type="datetime-local" id="timeInput">
+                <select id="timeFrom">
+                    <option value="UTC">UTC</option>
+                    <option value="EST">EST (Eastern)</option>
+                    <option value="CST">CST (Central)</option>
+                    <option value="PST">PST (Pacific)</option>
+                    <option value="GMT">GMT</option>
+                </select>
+                <select id="timeTo">
+                    <option value="EST">EST (Eastern)</option>
+                    <option value="CST">CST (Central)</option>
+                    <option value="PST">PST (Pacific)</option>
+                    <option value="UTC">UTC</option>
+                    <option value="GMT">GMT</option>
+                </select>
+                <button onclick="convertTime()"><i class="fas fa-exchange-alt"></i> Convert Time</button>
+                <div id="timeResult" class="result"></div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <p>Hailshdade  &copy; 2023 | Simple solutions for everyday problems</p>
+        </footer>
+        
+        <!-- Mobile Action Buttons -->
+        <button class="install-btn" id="installButton" style="display: none;">
+            <i class="fas fa-download"></i>
+        </button>
+        
+        <button class="back-to-top" id="backToTop" style="display: none;">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <script>
+        // Mobile-specific optimizations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default dates for astronomy tools
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('moonDate').value = today;
+            document.getElementById('sunDate').value = today;
+            
+            // Initialize mobile features
+            initMobileFeatures();
+            initPWA();
+        });
+
+        // Mobile-specific features
+        function initMobileFeatures() {
+            // Better touch handling
+            document.addEventListener('touchstart', function() {}, { passive: true });
+            
+            // Back to top button
+            const backToTop = document.getElementById('backToTop');
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTop.style.display = 'flex';
+                } else {
+                    backToTop.style.display = 'none';
+                }
+            });
+            
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Prevent zoom on input focus (iOS)
+            document.addEventListener('touchstart', function(e) {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+                    document.body.style.zoom = "100%";
+                }
+            });
+        }
+
+        // PWA Installation
+        let deferredPrompt;
+        function initPWA() {
+            const installButton = document.getElementById('installButton');
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installButton.style.display = 'flex';
+                
+                installButton.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            installButton.style.display = 'none';
+                        }
+                        deferredPrompt = null;
+                    }
+                });
+            });
+            
+            window.addEventListener('appinstalled', () => {
+                installButton.style.display = 'none';
+                deferredPrompt = null;
+            });
+        }
+
+        // All calculator functions (same as before, but with mobile optimizations)
+        function calculateTip() {
+            showLoading();
+            setTimeout(() => {
+                const bill = parseFloat(document.getElementById('billAmount').value);
+                const tipPercent = parseFloat(document.getElementById('tipPercent').value);
+                const people = parseInt(document.getElementById('peopleCount').value);
+                
+                if (isNaN(bill) || isNaN(tipPercent) || isNaN(people) || people < 1) {
+                    alert("Please enter valid numbers");
+                    hideLoading();
+                    return;
+                }
+                
+                const tipAmount = bill * (tipPercent / 100);
+                const totalAmount = bill + tipAmount;
+                const perPerson = totalAmount / people;
+                
+                document.getElementById('tipResult').innerHTML = 
+                    `Tip: $${tipAmount.toFixed(2)}<br>
+                     Total: $${totalAmount.toFixed(2)}<br>
+                     ${people > 1 ? `Per Person: $${perPerson.toFixed(2)}` : ''}`;
+                document.getElementById('tipResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function calculateLoan() {
+            showLoading();
+            setTimeout(() => {
+                const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+                const interestRate = parseFloat(document.getElementById('interestRate').value);
+                const loanTerm = parseFloat(document.getElementById('loanTerm').value);
+                
+                if (isNaN(loanAmount) || isNaN(interestRate) || isNaN(loanTerm)) {
+                    alert("Please enter valid numbers");
+                    hideLoading();
+                    return;
+                }
+                
+                const monthlyInterestRate = interestRate / 100 / 12;
+                const numberOfPayments = loanTerm * 12;
+                
+                const monthlyPayment = (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / 
+                                      (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+                
+                const totalPayment = monthlyPayment * numberOfPayments;
+                const totalInterest = totalPayment - loanAmount;
+                
+                document.getElementById('loanResult').innerHTML = 
+                    `Monthly Payment: $${monthlyPayment.toFixed(2)}<br>
+                     Total Payment: $${totalPayment.toFixed(2)}<br>
+                     Total Interest: $${totalInterest.toFixed(2)}`;
+                document.getElementById('loanResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function convertUnits() {
+            showLoading();
+            setTimeout(() => {
+                const value = parseFloat(document.getElementById('convertValue').value);
+                const from = document.getElementById('convertFrom').value;
+                const to = document.getElementById('convertTo').value;
+                
+                if (isNaN(value)) {
+                    alert("Please enter a valid number");
+                    hideLoading();
+                    return;
+                }
+                
+                let result;
+                if (from === 'miles' && to === 'km') result = value * 1.60934;
+                else if (from === 'km' && to === 'miles') result = value / 1.60934;
+                else if (from === 'lbs' && to === 'kg') result = value * 0.453592;
+                else if (from === 'kg' && to === 'lbs') result = value / 0.453592;
+                else if (from === 'celsius' && to === 'fahrenheit') result = (value * 9/5) + 32;
+                else if (from === 'fahrenheit' && to === 'celsius') result = (value - 32) * 5/9;
+                else result = value;
+                
+                document.getElementById('convertResult').innerHTML = 
+                    `${value} ${from} = ${result.toFixed(2)} ${to}`;
+                document.getElementById('convertResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function generatePassword() {
+            showLoading();
+            setTimeout(() => {
+                const length = parseInt(document.getElementById('passLength').value);
+                const includeUppercase = document.getElementById('uppercase').checked;
+                const includeNumbers = document.getElementById('numbers').checked;
+                const includeSymbols = document.getElementById('symbols').checked;
+                
+                let charset = "abcdefghijklmnopqrstuvwxyz";
+                if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                if (includeNumbers) charset += "0123456789";
+                if (includeSymbols) charset += "!@#$%^&*";
+                
+                if (charset.length === 0) {
+                    alert("Please select at least one character type");
+                    hideLoading();
+                    return;
+                }
+                
+                let password = "";
+                for (let i = 0; i < length; i++) {
+                    password += charset.charAt(Math.floor(Math.random() * charset.length));
+                }
+                
+                document.getElementById('passwordResult').innerHTML = 
+                    `Generated Password: <strong>${password}</strong>`;
+                document.getElementById('passwordResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function calculateAge() {
+            showLoading();
+            setTimeout(() => {
+                const birthDate = new Date(document.getElementById('birthDate').value);
+                const today = new Date();
+                
+                if (isNaN(birthDate.getTime())) {
+                    alert("Please select a valid date");
+                    hideLoading();
+                    return;
+                }
+                
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                
+                let months = today.getMonth() - birthDate.getMonth();
+                let days = today.getDate() - birthDate.getDate();
+                
+                if (days < 0) {
+                    months--;
+                    const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                    days += prevMonth.getDate();
+                }
+                
+                if (months < 0) {
+                    months += 12;
+                }
+                
+                document.getElementById('ageResult').innerHTML = 
+                    `You are <strong>${age}</strong> years, <strong>${months}</strong> months, and <strong>${days}</strong> days old`;
+                document.getElementById('ageResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function calculateBMI() {
+            showLoading();
+            setTimeout(() => {
+                const height = parseFloat(document.getElementById('height').value) / 100;
+                const weight = parseFloat(document.getElementById('weight').value);
+                
+                if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
+                    alert("Please enter valid height and weight");
+                    hideLoading();
+                    return;
+                }
+                
+                const bmi = weight / (height * height);
+                let category = "";
+                
+                if (bmi < 18.5) category = "Underweight";
+                else if (bmi < 25) category = "Normal weight";
+                else if (bmi < 30) category = "Overweight";
+                else category = "Obese";
+                
+                document.getElementById('bmiResult').innerHTML = 
+                    `Your BMI: <strong>${bmi.toFixed(1)}</strong><br>
+                     Category: <strong>${category}</strong>`;
+                document.getElementById('bmiResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function calculateCalories() {
+            showLoading();
+            setTimeout(() => {
+                const age = parseFloat(document.getElementById('age').value);
+                const gender = document.getElementById('gender').value;
+                const height = parseFloat(document.getElementById('heightCm').value);
+                const weight = parseFloat(document.getElementById('weightKg').value);
+                const activityLevel = parseFloat(document.getElementById('activityLevel').value);
+                
+                if (isNaN(age) || isNaN(height) || isNaN(weight)) {
+                    alert("Please enter valid numbers");
+                    hideLoading();
+                    return;
+                }
+                
+                let bmr;
+                if (gender === 'male') {
+                    bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+                } else {
+                    bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+                }
+                
+                const maintenanceCalories = bmr * activityLevel;
+                
+                document.getElementById('calorieResult').innerHTML = 
+                    `BMR: <strong>${bmr.toFixed(0)}</strong> calories/day<br>
+                     Maintenance: <strong>${maintenanceCalories.toFixed(0)}</strong> calories/day<br>
+                     Weight Loss (500 cal deficit): <strong>${(maintenanceCalories - 500).toFixed(0)}</strong> calories/day<br>
+                     Weight Gain (500 cal surplus): <strong>${(maintenanceCalories + 500).toFixed(0)}</strong> calories/day`;
+                document.getElementById('calorieResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function addCourse() {
+            const courseEntry = document.createElement('div');
+            courseEntry.className = 'course-entry';
+            courseEntry.innerHTML = `
+                <input type="text" class="courseName" placeholder="Course name">
+                <input type="number" class="courseCredits" placeholder="Credits" min="1">
+                <select class="courseGrade">
+                    <option value="4.0">A</option>
+                    <option value="3.7">A-</option>
+                    <option value="3.3">B+</option>
+                    <option value="3.0">B</option>
+                    <option value="2.7">B-</option>
+                    <option value="2.3">C+</option>
+                    <option value="2.0">C</option>
+                    <option value="1.7">C-</option>
+                    <option value="1.3">D+</option>
+                    <option value="1.0">D</option>
+                    <option value="0.0">F</option>
+                </select>
+            `;
+            document.getElementById('gpaCourses').appendChild(courseEntry);
+        }
+        
+        function calculateGPA() {
+            showLoading();
+            setTimeout(() => {
+                const courseEntries = document.querySelectorAll('.course-entry');
+                let totalPoints = 0;
+                let totalCredits = 0;
+                
+                for (let entry of courseEntries) {
+                    const credits = parseFloat(entry.querySelector('.courseCredits').value);
+                    const grade = parseFloat(entry.querySelector('.courseGrade').value);
+                    
+                    if (isNaN(credits) || credits <= 0) {
+                        alert("Please enter valid credits for all courses");
+                        hideLoading();
+                        return;
+                    }
+                    
+                    totalPoints += credits * grade;
+                    totalCredits += credits;
+                }
+                
+                if (totalCredits === 0) {
+                    alert("Please add at least one course");
+                    hideLoading();
+                    return;
+                }
+                
+                const gpa = totalPoints / totalCredits;
+                
+                document.getElementById('gpaResult').innerHTML = 
+                    `Your GPA: <strong>${gpa.toFixed(2)}</strong>`;
+                document.getElementById('gpaResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function calculateMoonPhase() {
+            showLoading();
+            setTimeout(() => {
+                const date = new Date(document.getElementById('moonDate').value);
+                
+                if (isNaN(date.getTime())) {
+                    alert("Please select a valid date");
+                    hideLoading();
+                    return;
+                }
+                
+                const knownNewMoon = new Date(2023, 0, 21);
+                const daysSinceKnown = Math.floor((date - knownNewMoon) / (1000 * 60 * 60 * 24));
+                const moonAge = daysSinceKnown % 29.53;
+                
+                let phase;
+                if (moonAge < 1) phase = "New Moon";
+                else if (moonAge < 7.4) phase = "Waxing Crescent";
+                else if (moonAge < 14.8) phase = "First Quarter";
+                else if (moonAge < 22.2) phase = "Waxing Gibbous";
+                else if (moonAge < 29.53) phase = "Waning Gibbous";
+                
+                document.getElementById('moonResult').innerHTML = 
+                    `Moon Phase: <strong>${phase}</strong><br>
+                     Moon Age: <strong>${moonAge.toFixed(1)}</strong> days`;
+                document.getElementById('moonResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function calculateSunTimes() {
+            showLoading();
+            setTimeout(() => {
+                const date = new Date(document.getElementById('sunDate').value);
+                const latitude = parseFloat(document.getElementById('latitude').value);
+                const longitude = parseFloat(document.getElementById('longitude').value);
+                
+                if (isNaN(date.getTime()) || isNaN(latitude) || isNaN(longitude)) {
+                    alert("Please enter valid date and coordinates");
+                    hideLoading();
+                    return;
+                }
+                
+                const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+                const sunriseHour = 6 + Math.sin(dayOfYear / 58) * 1.5;
+                const sunsetHour = 18 - Math.sin(dayOfYear / 58) * 1.5;
+                
+                const sunrise = new Date(date);
+                sunrise.setHours(Math.floor(sunriseHour), Math.floor((sunriseHour % 1) * 60));
+                
+                const sunset = new Date(date);
+                sunset.setHours(Math.floor(sunsetHour), Math.floor((sunsetHour % 1) * 60));
+                
+                document.getElementById('sunResult').innerHTML = 
+                    `Sunrise: <strong>${sunrise.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</strong><br>
+                     Sunset: <strong>${sunset.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</strong>`;
+                document.getElementById('sunResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function convertCurrency() {
+            showLoading();
+            setTimeout(() => {
+                const amount = parseFloat(document.getElementById('currencyAmount').value);
+                const from = document.getElementById('currencyFrom').value;
+                const to = document.getElementById('currencyTo').value;
+                
+                if (isNaN(amount)) {
+                    alert("Please enter a valid amount");
+                    hideLoading();
+                    return;
+                }
+                
+                const rates = {
+                    USD: { EUR: 0.85, GBP: 0.73, JPY: 110.25 },
+                    EUR: { USD: 1.18, GBP: 0.86, JPY: 129.75 },
+                    GBP: { USD: 1.37, EUR: 1.16, JPY: 151.20 },
+                    JPY: { USD: 0.0091, EUR: 0.0077, GBP: 0.0066 }
+                };
+                
+                let result;
+                if (from === to) {
+                    result = amount;
+                } else {
+                    result = amount * rates[from][to];
+                }
+                
+                document.getElementById('currencyResult').innerHTML = 
+                    `${amount} ${from} = ${result.toFixed(2)} ${to}`;
+                document.getElementById('currencyResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        function convertTime() {
+            showLoading();
+            setTimeout(() => {
+                const timeInput = document.getElementById('timeInput').value;
+                const fromZone = document.getElementById('timeFrom').value;
+                const toZone = document.getElementById('timeTo').value;
+                
+                if (!timeInput) {
+                    alert("Please select a date and time");
+                    hideLoading();
+                    return;
+                }
+                
+                const date = new Date(timeInput);
+                
+                const offsets = {
+                    UTC: 0,
+                    EST: -5,
+                    CST: -6,
+                    PST: -8,
+                    GMT: 0
+                };
+                
+                const fromOffset = offsets[fromZone];
+                const toOffset = offsets[toZone];
+                const offsetDiff = toOffset - fromOffset;
+                
+                date.setHours(date.getHours() + offsetDiff);
+                
+                document.getElementById('timeResult').innerHTML = 
+                    `Converted Time: <strong>${date.toLocaleString()}</strong>`;
+                document.getElementById('timeResult').style.display = 'block';
+                hideLoading();
+            }, 300);
+        }
+        
+        // Loading state functions
+        function showLoading() {
+            document.body.classList.add('loading');
+        }
+        
+        function hideLoading() {
+            document.body.classList.remove('loading');
+        }
+        
+        // Search functionality
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const searchTerm = document.querySelector('.search-box').value.toLowerCase();
+            const toolCards = document.querySelectorAll('.tool-card');
+            
+            toolCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Allow pressing Enter in search box
+        document.querySelector('.search-box').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('.search-btn').click();
+            }
+        });
+        
+        // Category tabs functionality
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.category-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                this.classList.add('active');
+                
+                const category = this.getAttribute('data-category');
+                const toolCards = document.querySelectorAll('.tool-card');
+                
+                toolCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
